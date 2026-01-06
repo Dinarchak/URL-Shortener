@@ -2,8 +2,9 @@ from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine, Asyn
 from sqlalchemy.orm import DeclarativeBase, mapped_column, Mapped
 from sqlalchemy import func
 from datetime import datetime
+from settings import config
 
-DB_URL = "postgresql+asyncpg://postgres:postgres@localhost:6432/postgres"
+DB_URL = f"postgresql+asyncpg://{config.username}:{config.password}@{config.host}:{config.port}/{config.db_name}"
 
 engine = create_async_engine(DB_URL, pool_size=20, max_overflow=30)
 async_session_maker = async_sessionmaker(engine, expire_on_commit=False)

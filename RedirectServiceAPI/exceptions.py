@@ -1,0 +1,2 @@
+class NoSuchSlugError(Exception):
+    pass
