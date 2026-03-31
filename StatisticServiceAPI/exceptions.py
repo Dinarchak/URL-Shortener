@@ -1,0 +1,2 @@
+class RedirecEventRecordingException(Exception):
+    pass

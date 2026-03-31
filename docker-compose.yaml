@@ -1,0 +1,110 @@
+services:
+  statistic_db:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: "${STATISTIC_POSTGRES_DB_NAME}"
+      POSTGRES_USER: "${STATISTIC_POSTGRES_USERNAME}"
+      POSTGRES_PASSWORD: "${STATISTIC_POSTGRES_PASSWORD}"
+    ports:
+      - "${STATISTIC_POSTGRES_PORT}:5432"
+    volumes:
+      - statistic_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready -U ${STATISTIC_POSTGRES_USERNAME}"]
+
+  links_db:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: "${LINK_POSTGRES_DB_NAME}"
+      POSTGRES_USER: "${LINK_POSTGRES_USERNAME}"
+      POSTGRES_PASSWORD: "${LINK_POSTGRES_PASSWORD}"
+    ports:
+      - "${LINK_POSTGRES_PORT}:5432"
+    volumes:
+      - links_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready -U ${LINK_POSTGRES_USERNAME}"]
+
+  users_db:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: "${USERS_POSTGRES_DB_NAME}"
+      POSTGRES_USER: "${USERS_POSTGRES}"
+      POSTGRES_PASSWORD: "${USERS_POSTGRES_PASSWORD}"
+    ports:
+      - "${USERS_POSTGRES_PORT}:5432"
+    volumes:
+      - users_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready -U ${USERS_POSTGRES}"]
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    healthcheck:
+      test: ["CMD", "kafka-broker-api-versions.sh", "--bootstrap-server", "localhost:9092"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  user_service:
+    build: ./UserServiceAPI
+    ports:
+      - "${USERS_PORT}:8000"
+    restart: always
+    depends_on:
+      users_db:
+        condition: service_healthy
+
+  statistic_service:
+    build: ./StatisticServiceAPI
+    ports:
+      - "${STATISTIC_PORT}:8000"
+    restart: always
+    depends_on:
+      kafka:
+        condition: service_healthy
+      statistic_db:
+        condition: service_healthy
+      
+
+  redirect_service:
+    build: ./RedirectServiceAPI
+    ports:
+      - "${REDIRECT_PORT}:8000"
+    restart: always
+    depends_on:
+      kafka:
+        condition: service_healthy
+
+  link_service:
+    build: ./LinkServiceAPI
+    ports:
+      - "${LINK_PORT}:8000"
+    restart: always
+    depends_on:
+      links_db:
+        condition: service_healthy
+
+volumes:
+  statistic_postgres_data:
+  links_postgres_data:
+  users_postgres_data:
