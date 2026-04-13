@@ -6,7 +6,7 @@ from exceptions import EventSendingError
 producer = Producer({'bootstrap.servers': config.KAFKA_BOOTSTRAP_SERVERS})
 
 
-def send_link_ckick(data: RedirectInfo):
+def send_link_click(data: RedirectInfo):
     try:
         producer.produce(
             topic=config.KAFKA_TOPIC,

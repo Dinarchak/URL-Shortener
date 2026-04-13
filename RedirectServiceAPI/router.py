@@ -3,7 +3,7 @@ from fastapi.responses import RedirectResponse
 from service import get_url_by_slug
 from exceptions import NoSuchSlugError
 from settings import config
-from kafka_producer import send_link_ckick
+from kafka_producer import send_link_click
 from schemas import RedirectInfo
 from datetime import datetime
 from aiohttp import ClientSession
@@ -19,7 +19,7 @@ async def redirect_to_url(request: Request, slug: str):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail='Нет такого slug-а')
 
     try:
-        send_link_ckick(RedirectInfo(slug=slug, time=datetime.now(), userinfo=request.headers.get('user-agent')))
+        send_link_click(RedirectInfo(slug=slug, time=datetime.now(), userinfo=request.headers.get('user-agent')))
         return RedirectResponse(url, status_code=status.HTTP_302_FOUND)
     except NoSuchSlugError as exc:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Нет такого url')

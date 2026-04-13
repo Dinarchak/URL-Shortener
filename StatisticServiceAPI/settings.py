@@ -20,7 +20,9 @@ class KafkaConfig(ConfigBase):
 
     bootstrap_servers: str
     group_id: str
-    topics: str
+    redirect_topic: str
+    creation_topic: str
+    
 
 
 class Config(ConfigBase):
@@ -28,4 +30,3 @@ class Config(ConfigBase):
     kafka: KafkaConfig = Field(default_factory=KafkaConfig)
 
 config = Config()
-print(config)

@@ -8,3 +8,7 @@ class SlugAlreadyExistsError(Exception):
 
 class NotUrlFindError(Exception):
     pass
+
+
+class EventSendingError(Exception):
+    pass

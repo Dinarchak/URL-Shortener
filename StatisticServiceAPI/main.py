@@ -24,7 +24,10 @@ async def lifespan(app: FastAPI):
             "group.id": config.kafka.group_id,
             "auto.offset.reset": "earliest"
         },
-        topic=config.kafka.topics,
+        topics=[
+            config.kafka.redirect_topic,
+            config.kafka.creation_topic
+        ],
         loop=loop
     )
 
