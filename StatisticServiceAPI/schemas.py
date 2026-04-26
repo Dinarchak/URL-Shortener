@@ -10,10 +10,9 @@ class RedirectEventSchema(BaseModel):
 
 
 class CreationEventSchema(BaseModel):
-    time: datetime = Field(..., description='Время в момент перехода по ссылке')
+    time: datetime = Field(..., description='Время в момент создания сокращения')
     slug: str = Field(..., description='Сокращенная ссылка')
     userinfo: str = Field(..., max_length=512, description='доп инфа про пользователя')
-    link: str = Field(..., description='Исходная ссылка')
+    user_id: int = Field(..., description='id пользователя')
 
     model_config = ConfigDict(from_attributes=True)
-

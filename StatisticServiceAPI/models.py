@@ -16,6 +16,7 @@ class CreateEvent(Base):
     __tablename__ = 'create_events'
 
     id: Mapped[int] = mapped_column(primary_key=True, nullable=False)
+    user_id: Mapped[int] = mapped_column(nullable=False)
     time: Mapped[datetime] = mapped_column(nullable=False)
     slug: Mapped[str] = mapped_column(String(10), nullable=False, unique=True)
     userinfo: Mapped[str] = mapped_column(String(512), nullable=True)

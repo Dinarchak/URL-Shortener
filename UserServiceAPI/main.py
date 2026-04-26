@@ -31,7 +31,7 @@ fastapi_users = FastAPIUsers[User, int](
 )
 
 
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(lifespan=lifespan, title='User Service API')
 app.include_router(
     fastapi_users.get_auth_router(auth_backend),
     prefix="/auth",

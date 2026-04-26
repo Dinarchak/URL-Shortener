@@ -4,7 +4,7 @@ from sqlalchemy import func
 from datetime import datetime
 from settings import config
 
-DB_URL = f"postgresql+asyncpg://{config.username}:{config.password}@{config.host}:{config.port}/{config.db_name}"
+DB_URL = f"postgresql+asyncpg://{config.db.username}:{config.db.password}@{config.db.host}:{config.db.port}/{config.db.db_name}"
 
 engine = create_async_engine(DB_URL, pool_size=20, max_overflow=30)
 async_session_maker = async_sessionmaker(engine, expire_on_commit=False)

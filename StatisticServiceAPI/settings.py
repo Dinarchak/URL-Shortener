@@ -22,11 +22,18 @@ class KafkaConfig(ConfigBase):
     group_id: str
     redirect_topic: str
     creation_topic: str
+
+
+class JWTConfig(ConfigBase):
+    model_config = SettingsConfigDict(env_prefix='JWT_')
+    token: str
+    aud: str
     
 
 
 class Config(ConfigBase):
     db: DatabaseConfig = Field(default_factory=DatabaseConfig)
     kafka: KafkaConfig = Field(default_factory=KafkaConfig)
+    jwt: JWTConfig = Field(default_factory=JWTConfig)
 
 config = Config()

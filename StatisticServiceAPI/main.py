@@ -19,7 +19,7 @@ async def lifespan(app: FastAPI):
     loop = asyncio.get_running_loop()
 
     consumer_worker = KafkaConsumerWorker(
-        config={
+        config_={
             "bootstrap.servers": config.kafka.bootstrap_servers,
             "group.id": config.kafka.group_id,
             "auto.offset.reset": "earliest"
@@ -41,5 +41,5 @@ async def lifespan(app: FastAPI):
     print("Kafka consumer stopped")
 
 
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(lifespan=lifespan, title='Statistic Service API')
 app.include_router(router)

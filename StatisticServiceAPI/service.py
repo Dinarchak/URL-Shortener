@@ -5,7 +5,8 @@ from dao import (
     add_redirect_event_record,
     get_all_redirect_event_records,
     add_create_event_record,
-    get_all_create_event_records)
+    get_all_create_event_records
+    )
 from typing import List
 
 async def add_redirect_event(event: RedirectEventSchema):
@@ -27,10 +28,15 @@ async def add_create_event(event: CreationEventSchema):
         await add_create_event_record(
             slug=event.slug,
             time=event.time,
-            userinfo=event.userinfo
+            userinfo=event.userinfo,
+            user_id=event.user_id
         )
     except SQLAlchemyError as e:
         raise CreateEventRecordingException(str(e))
+
+async def get_all_redirect_events_by_user(user_id: int) -> List[CreationEventSchema]:
+    res = await get_all_create_event_records(user_id=user_id)
+    return [CreationEventSchema.model_validate(obj) for obj in res]
 
 async def get_all_redirect_events() -> List[CreationEventSchema]:
     res = await get_all_create_event_records()

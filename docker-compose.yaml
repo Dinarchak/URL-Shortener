@@ -60,7 +60,7 @@ services:
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     healthcheck:
-      test: ["CMD", "kafka-broker-api-versions.sh", "--bootstrap-server", "localhost:9092"]
+      test: ["CMD", "bash", "-c", "nc -z localhost 9092"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -70,9 +70,6 @@ services:
     ports:
       - "${USERS_PORT}:8000"
     restart: always
-    depends_on:
-      users_db:
-        condition: service_healthy
 
   statistic_service:
     build: ./StatisticServiceAPI
@@ -82,9 +79,6 @@ services:
     depends_on:
       kafka:
         condition: service_healthy
-      statistic_db:
-        condition: service_healthy
-      
 
   redirect_service:
     build: ./RedirectServiceAPI
@@ -101,7 +95,7 @@ services:
       - "${LINK_PORT}:8000"
     restart: always
     depends_on:
-      links_db:
+      kafka:
         condition: service_healthy
 
 volumes:

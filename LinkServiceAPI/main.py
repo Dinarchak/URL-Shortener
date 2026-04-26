@@ -10,5 +10,5 @@ async def lifespan(app: FastAPI):
     yield
     
 
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(lifespan=lifespan, title='Link Service API')
 app.include_router(router)
