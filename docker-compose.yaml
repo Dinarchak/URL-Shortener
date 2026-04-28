@@ -1,4 +1,17 @@
 services:
+  nginx:
+    image: nginx:stable-alpine
+    ports:
+     - "80:80"
+    depends_on:
+      - link_service
+      - redirect_service
+      - user_service
+      - statistic_service
+    volumes:
+     - './nginx.conf:/etc/nginx/nginx.conf'
+
+
   statistic_db:
     image: postgres:17
     environment:
